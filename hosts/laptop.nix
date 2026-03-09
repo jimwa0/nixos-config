@@ -87,6 +87,7 @@
     # SYSTEM
     nh
     gdu
+    qdirstat
     # nix-index
     xwayland-satellite
     brightnessctl
@@ -198,23 +199,30 @@
     # audacity
 
     # GAMES
+    prismlauncher
     osu-lazer-bin
     # taisei
-    prismlauncher
     # waywall
     # glfw
     # glfw3-minecraft
 
     # FUN
-    cava
-    tty-clock
-    cmatrix
-    cbonsai
-    pipes
-    figlet
+    # cava
+    # tty-clock
+    # cmatrix
+    # cbonsai
+    # pipes
+    # figlet
 
+    # FONTS
+    inter
     nerd-fonts.fantasque-sans-mono
-    sarasa-gothic
+    nerd-fonts.iosevka
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+    # sarasa-gothic
+
+    # other
     sddm-astronaut
     kdePackages.qtmultimedia
   ];
