@@ -32,17 +32,22 @@
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
 
-  #  X11
-  services.xserver.enable = true;
-
-  # configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  # X11
+  # services.xserver.enable = true;
+  # services.xserver.xkb = {
+  #   layout = "us";
+  #   variant = "";
+  # };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
+
+  # disable debounce (for drag clicking)
+  environment.etc."libinput/local-overrides.quirks".text = ''
+    [Never Debounce]
+    MatchUdevType=mouse
+    ModelBouncingKeys=1
+  '';
 
   # fcitx5-mozc
   i18n.inputMethod = {
@@ -50,12 +55,14 @@
     type = "fcitx5";
     fcitx5.addons = with pkgs; [
       fcitx5-mozc-ut
+      # fcitx5-rime
+      # rime-ice
       fcitx5-gtk
     ];
   };
 
   # enable CUPS to print documents
-  services.printing.enable = true;
+  # services.printing.enable = true;
 
   # pipewire
   services.pulseaudio.enable = false;
@@ -79,6 +86,7 @@
   environment.systemPackages = with pkgs; [
     # SYSTEM
     nh
+    gdu
     # nix-index
     xwayland-satellite
     brightnessctl
@@ -98,9 +106,10 @@
     libnotify
     wl-clipboard 
     starship
-    xdg-desktop-portal-wlr
-    kdePackages.xdg-desktop-portal-kde
+# maybe important
+    # xdg-desktop-portal-wlr
     # kdePackages.xdg-desktop-portal-kde
+#
     # kdePackages.dolphin
     # kdePackages.okular
     # kdePackages.gwenview
@@ -134,6 +143,7 @@
     ffmpeg
     nautilus
     tree
+    wget
     # stow
     # valgrind
     # gdb
@@ -141,32 +151,33 @@
     # virtualbox
     # remmina
     # tigervnc
+    # pastel
 
     # DEVELOPMENT
     gcc
-    clang
-    cmake
-    gnumake
-    ninja
     python3
     nodejs
-    rustup
-    lua
-    luajit
-    jre8
+    jdk17
+    # clang
+    # cmake
+    # gnumake
+    # ninja
+    # rustup
+    # lua
+    # luajit
+    # jre8
     # jre17_minimal
-    # quartus-prime-lite
-    # ltspice
-    kicad
-    # pastel
 
     # PRODUCTIVITY
     obsidian
     discord
+    # element-desktop
     zellij
     qbittorrent
     vlc
     # libreoffice
+    anki
+    # sioyek
     # spotify  # broken ?
     # cmus
     # rmpc
@@ -174,12 +185,15 @@
     # cloudflared
     # pom
     # ticktick
-    # anki
+    # quartus-prime-lite
+    # ltspice
+    # kicad
 
     # MULTIMEDIA
     # deadbeef
-    obs-studio
+    # obs-studio
     # kdePackages.kdenlive
+    # gimp
     # lmms
     # audacity
 
@@ -187,9 +201,9 @@
     osu-lazer-bin
     # taisei
     prismlauncher
-    waywall
+    # waywall
     # glfw
-    glfw3-minecraft
+    # glfw3-minecraft
 
     # FUN
     cava
@@ -206,10 +220,8 @@
   ];
 
   # nix-ld
-  programs.nix-ld.enable =  true;
-  programs.nix-ld.libraries = with pkgs; [
-    
-  ];
+  # programs.nix-ld.enable =  true;
+  # programs.nix-ld.libraries = with pkgs; [];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -262,6 +274,12 @@
   programs.steam.extraCompatPackages = with pkgs; [
     proton-ge-bin
   ];
+
+  # platformio
+  # services.udev.packages = with pkgs; [ 
+  #   platformio-core.udev
+  #   openocd
+  # ];
 
   # openssh daemon
   services.openssh.enable = true;
