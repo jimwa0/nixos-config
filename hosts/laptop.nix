@@ -10,6 +10,8 @@
   nix.gc.dates = "daily";
   nix.gc.options = "--delete-older-than 10d";
   nix.settings.auto-optimise-store = true;
+  nix.optimise.automatic = true;
+  nix.optimise.dates = [ "weekly" ];
 
   # bootloader
   boot.loader.systemd-boot.enable = true;
@@ -33,11 +35,11 @@
   i18n.defaultLocale = "en_CA.UTF-8";
 
   # X11
-  # services.xserver.enable = true;
-  # services.xserver.xkb = {
-  #   layout = "us";
-  #   variant = "";
-  # };
+  services.xserver.enable = true;
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
@@ -76,7 +78,7 @@
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
-    #media-session.enable = true;
+    # media-session.enable = true;
   };
 
   # allow unfree packages
@@ -84,6 +86,9 @@
 
   # packages
   environment.systemPackages = with pkgs; [
+    # CUSTOM
+    (callPackage ../pkgs/ninb.nix {})
+
     # SYSTEM
     nh
     gdu
@@ -116,6 +121,8 @@
     # kdePackages.gwenview
     # kdePackages.ark
     # kdePackages.discover
+    kdePackages.kdeconnect-kde
+    kdePackages.partitionmanager
     posy-cursors
     gpu-screen-recorder
     # nushell
@@ -145,6 +152,7 @@
     nautilus
     tree
     wget
+    p7zip
     # stow
     # valgrind
     # gdb
@@ -152,7 +160,7 @@
     # virtualbox
     # remmina
     # tigervnc
-    # pastel
+    pastel
 
     # DEVELOPMENT
     gcc
@@ -168,6 +176,7 @@
     # luajit
     # jre8
     # jre17_minimal
+    # arduino-ide
 
     # PRODUCTIVITY
     obsidian
@@ -179,52 +188,49 @@
     # libreoffice
     anki
     # sioyek
-    # spotify  # broken ?
+    # spotify
+    # deadbeef
     # cmus
     # rmpc
     # mpd
     # cloudflared
-    # pom
-    # ticktick
+    ticktick
     # quartus-prime-lite
     # ltspice
     # kicad
 
     # MULTIMEDIA
-    # deadbeef
-    # obs-studio
-    # kdePackages.kdenlive
-    # gimp
-    # lmms
-    # audacity
+    obs-studio
+    kdePackages.kdenlive
+    gimp
+    lmms
+    audacity
 
     # GAMES
-    prismlauncher
     osu-lazer-bin
+    steamtinkerlaunch
     # taisei
-    # waywall
+    prismlauncher
+    waywall
+    glfw3-minecraft
     # glfw
-    # glfw3-minecraft
 
     # FUN
-    # cava
-    # tty-clock
-    # cmatrix
-    # cbonsai
-    # pipes
-    # figlet
-
-    # FONTS
-    inter
-    nerd-fonts.fantasque-sans-mono
-    nerd-fonts.iosevka
-    noto-fonts-cjk-sans
-    noto-fonts-color-emoji
-    # sarasa-gothic
+    cava
+    tty-clock
+    cmatrix
+    cbonsai
+    pipes
+    figlet
 
     # other
     sddm-astronaut
     kdePackages.qtmultimedia
+    libxkbcommon
+    libx11
+    libxinerama
+    libxkbcommon
+    libxt
   ];
 
   # nix-ld
@@ -240,7 +246,7 @@
   # };
 
   # DE/WM/WC
-  programs.niri.enable = true;
+  # programs.niri.enable = true;
   services.desktopManager.plasma6.enable = true;
   # programs.hyprland = {
     # enable = true;
@@ -273,6 +279,20 @@
   };
   programs.localsend.enable = true;
 
+  # fonts
+  fonts = {
+  fontconfig.enable = true;
+
+  packages = with pkgs; [
+      inter
+      nerd-fonts.fantasque-sans-mono
+      nerd-fonts.iosevka
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
+      # sarasa-gothic
+    ];
+  };
+
   # other
   services.flatpak.enable = true;
   programs.gpu-screen-recorder.enable = true;
@@ -293,9 +313,15 @@
   services.openssh.enable = true;
 
   # open ports in the firewall
+  # networking.firewall.enable = false;  # disable firewall
   networking.firewall.allowedTCPPorts = [ 53317 ];
   networking.firewall.allowedUDPPorts = [ 5353 53317 ];
-  # networking.firewall.enable = false;  # disable firewall
+  networking.firewall.allowedTCPPortRanges = [
+    { from = 1714; to = 1764; }
+  ];
+  networking.firewall.allowedUDPPortRanges = [
+    { from = 1714; to = 1764; }
+  ];
 
   # windows partition
   fileSystems."/mnt/win11" = {
@@ -310,8 +336,8 @@
 
     extraPackages = with pkgs; [
       intel-media-driver
-        libva
-        libva-utils
+      libva
+      libva-utils
     ];
   };
 
