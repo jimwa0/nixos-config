@@ -226,11 +226,12 @@
     # other
     sddm-astronaut
     kdePackages.qtmultimedia
-    libxkbcommon
-    libx11
-    libxinerama
-    libxkbcommon
-    libxt
+    easyeffects 
+    # libxkbcommon
+    # libx11
+    # libxinerama
+    # libxkbcommon
+    # libxt
   ];
 
   # nix-ld
