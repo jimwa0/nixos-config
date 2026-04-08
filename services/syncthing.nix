@@ -5,18 +5,15 @@
 
     settings = {
       folders = {
-        "lh44t-jvypb" = {
-          label = "notes";
+        "notes" = {
           path = "/srv/shared/notes";
           ignorePerms = true;
         };
-        "24zlr-3gahc" = {
-          label = "uni";
+        "uni" = {
           path = "/srv/shared/uni";
           ignorePerms = true;
         };
-        "nyuqt-pvgvq" = {
-          label = "music";
+        "music" = {
           path = "/srv/shared/music";
           ignorePerms = true;
         };
