@@ -20,7 +20,7 @@
         ./hosts/laptop.nix
         ./hardware/laptop.nix
 
-        # ./noctalia.nix
+        ./noctalia.nix
         ./services/sddm.nix
       ];
     };

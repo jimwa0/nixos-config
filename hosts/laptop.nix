@@ -100,7 +100,7 @@
     # ghostty 
     kitty
     fastfetch
-    hyfetch
+    # hyfetch
     # waybar
     # waybar-mpris
     # swww
@@ -112,17 +112,18 @@
     libnotify
     wl-clipboard 
     starship
-# maybe important
     # xdg-desktop-portal-wlr
-    # kdePackages.xdg-desktop-portal-kde
-#
+    kdePackages.xdg-desktop-portal-kde
+    kdePackages.qt6ct
+    nautilus
     # kdePackages.dolphin
     # kdePackages.okular
     # kdePackages.gwenview
     # kdePackages.ark
     # kdePackages.discover
-    kdePackages.kdeconnect-kde
-    kdePackages.partitionmanager
+    # kdePackages.kdeconnect-kde
+    # kdePackages.partitionmanager
+    # readest
     posy-cursors
     gpu-screen-recorder
     # nushell
@@ -148,8 +149,9 @@
     ripgrep
     fzf
     curl
+    tldr
+    bat
     ffmpeg
-    nautilus
     tree
     wget
     p7zip
@@ -160,17 +162,17 @@
     # virtualbox
     # remmina
     # tigervnc
-    pastel
+    # pastel
 
     # DEVELOPMENT
-    gcc
     python3
-    nodejs
     jdk17
+    # gcc
     # clang
     # cmake
     # gnumake
     # ninja
+    # nodejs
     # rustup
     # lua
     # luajit
@@ -189,7 +191,7 @@
     anki
     # sioyek
     # spotify
-    # deadbeef
+    deadbeef
     # cmus
     # rmpc
     # mpd
@@ -201,27 +203,27 @@
 
     # MULTIMEDIA
     obs-studio
-    kdePackages.kdenlive
-    gimp
-    lmms
-    audacity
+    # kdePackages.kdenlive
+    # gimp
+    # lmms
+    # audacity
 
     # GAMES
-    osu-lazer-bin
+    # osu-lazer-bin
     steamtinkerlaunch
     # taisei
-    prismlauncher
+    # prismlauncher
     waywall
     glfw3-minecraft
     # glfw
 
     # FUN
-    cava
-    tty-clock
-    cmatrix
-    cbonsai
-    pipes
-    figlet
+    # cava
+    # tty-clock
+    # cmatrix
+    # cbonsai
+    # pipes
+    # figlet
 
     # other
     sddm-astronaut
@@ -247,22 +249,32 @@
   # };
 
   # DE/WM/WC
-  # programs.niri.enable = true;
   services.desktopManager.plasma6.enable = true;
+  environment.plasma6.excludePackages = [
+    pkgs.kdePackages.elisa
+    pkgs.kdePackages.konsole
+  ];
+  programs.niri = {
+    enable = true;
+    useNautilus = true;
+  };
   # programs.hyprland = {
     # enable = true;
     # programs.hyprland.portalPackage = pkgs.xdg-desktop-portal-hyprland;
-  # }
+  # };
   # services.xserver.windowManager.dwm.enable = true;
 
   # WM services
   xdg.portal = {
     enable = true;
+    xdgOpenUsePortal = true;
     wlr.enable = true;
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       # kdePackages.xdg-desktop-portal-kde
     ];
+    configPackages = [pkgs.xdg-desktop-portal-gtk];
+    config.common.default = "gtk";
   };
   # programs.hyprlock.enable = true;
 
@@ -282,9 +294,9 @@
 
   # fonts
   fonts = {
-  fontconfig.enable = true;
+    fontconfig.enable = true;
 
-  packages = with pkgs; [
+    packages = with pkgs; [
       inter
       nerd-fonts.fantasque-sans-mono
       nerd-fonts.iosevka
