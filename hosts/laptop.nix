@@ -85,13 +85,24 @@
   nixpkgs.config.allowUnfree = true;
 
   # packages
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = 
+  let
+    application-menu = pkgs.runCommandLocal "xdg-application-menu" {} ''
+      mkdir -p $out/etc/xdg/menus/
+      ln -s \
+        ${pkgs.kdePackages.plasma-workspace}/etc/xdg/menus/plasma-applications.menu \
+        $out/etc/xdg/menus/applications.menu
+    '';
+  in
+  with pkgs; [
     # CUSTOM
     (callPackage ../pkgs/ninb.nix {})
+    application-menu
 
     # SYSTEM
     nh
     gdu
+    dysk
     qdirstat
     # nix-index
     xwayland-satellite
@@ -116,14 +127,9 @@
     kdePackages.xdg-desktop-portal-kde
     kdePackages.qt6ct
     nautilus
-    # kdePackages.dolphin
-    # kdePackages.okular
-    # kdePackages.gwenview
-    # kdePackages.ark
-    # kdePackages.discover
+    yazi
     # kdePackages.kdeconnect-kde
     # kdePackages.partitionmanager
-    # readest
     posy-cursors
     gpu-screen-recorder
     # nushell
@@ -132,6 +138,7 @@
     # st
     # jellyfin-rpc
     jellyfin-tui
+    eloquent
 
     # UTIL
     # zsh-autosuggestions
@@ -155,18 +162,20 @@
     tree
     wget
     p7zip
+    zip
+    unzip
     # stow
     # valgrind
     # gdb
-    # yt-dlp
+    yt-dlp
     # virtualbox
     # remmina
     # tigervnc
     # pastel
 
     # DEVELOPMENT
-    python3
     jdk17
+    # python3
     # gcc
     # clang
     # cmake
@@ -181,6 +190,7 @@
     # arduino-ide
 
     # PRODUCTIVITY
+    ticktick
     obsidian
     discord
     # element-desktop
@@ -188,52 +198,48 @@
     qbittorrent
     vlc
     # libreoffice
+    onlyoffice-desktopeditors
     anki
     # sioyek
+    # readest
     # spotify
     deadbeef
     # cmus
     # rmpc
     # mpd
     # cloudflared
-    ticktick
     # quartus-prime-lite
     # ltspice
     # kicad
 
     # MULTIMEDIA
     obs-studio
-    # kdePackages.kdenlive
+    kdePackages.kdenlive
     # gimp
     # lmms
     # audacity
 
     # GAMES
-    # osu-lazer-bin
+    osu-lazer-bin
     steamtinkerlaunch
-    # taisei
-    # prismlauncher
+    taisei
+    prismlauncher
     waywall
     glfw3-minecraft
-    # glfw
 
     # FUN
-    # cava
+    cava
     # tty-clock
-    # cmatrix
-    # cbonsai
-    # pipes
-    # figlet
+    cmatrix
+    cbonsai
+    pipes
+    figlet
 
     # other
     sddm-astronaut
     kdePackages.qtmultimedia
     easyeffects 
-    # libxkbcommon
-    # libx11
-    # libxinerama
-    # libxkbcommon
-    # libxt
+    openvpn
   ];
 
   # nix-ld
@@ -315,6 +321,7 @@
   programs.steam.extraCompatPackages = with pkgs; [
     proton-ge-bin
   ];
+  programs.gamescope.enable = true;
 
   # platformio
   # services.udev.packages = with pkgs; [ 
@@ -336,12 +343,22 @@
     { from = 1714; to = 1764; }
   ];
 
+
+  ### HARDWARE ###
+
   # windows partition
   fileSystems."/mnt/win11" = {
     device = "/dev/disk/by-uuid/6A4A1ED74A1E9FBD";
     fsType = "ntfs3";
     options = [ "rw" "uid=1000" "gid=100" "dmask=022" "fmask=133" ];
   };
+
+  # old nixos partition
+  # fileSystems."/mnt/old-nixos" = {
+  #   device = "/dev/disk/by-uuid/5e8e57a0-ce05-41bb-a654-09cf91c73a77";
+  #   fsType = "ext4";
+  #   options = [ "rw" ];
+  # };
 
   # vaapi
   hardware.graphics = {
@@ -353,6 +370,11 @@
       libva-utils
     ];
   };
+
+  # audio fix
+  boot.kernelParams = [ "snd_intel_dspcfg.dsp_driver=1" ];
+
+  boot.extraModprobeConfig = ''options snd_hda_intel model=alc255-acer,headset-mode'';
 
   # bluetooth
   hardware.bluetooth.enable = true;
