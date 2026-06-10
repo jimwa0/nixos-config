@@ -139,6 +139,7 @@
     # jellyfin-rpc
     jellyfin-tui
     eloquent
+    drawy
 
     # UTIL
     # zsh-autosuggestions
@@ -204,6 +205,7 @@
     # readest
     # spotify
     deadbeef
+    kid3
     # cmus
     # rmpc
     # mpd
@@ -285,8 +287,9 @@
   # programs.hyprlock.enable = true;
 
   # power saving
-  services.power-profiles-daemon.enable = false;
-  services.tlp.enable = true;
+  services.power-profiles-daemon.enable = true;
+  services.upower.enable = true;
+  # services.tlp.enable = true;
 
   # server/sync
   services.tailscale.enable = true;
@@ -323,6 +326,12 @@
   ];
   programs.gamescope.enable = true;
 
+  # obs-studio
+  programs.obs-studio = {
+    enable = true;
+    enableVirtualCamera = true;
+  };
+
   # platformio
   # services.udev.packages = with pkgs; [ 
   #   platformio-core.udev
@@ -353,13 +362,6 @@
     options = [ "rw" "uid=1000" "gid=100" "dmask=022" "fmask=133" ];
   };
 
-  # old nixos partition
-  # fileSystems."/mnt/old-nixos" = {
-  #   device = "/dev/disk/by-uuid/5e8e57a0-ce05-41bb-a654-09cf91c73a77";
-  #   fsType = "ext4";
-  #   options = [ "rw" ];
-  # };
-
   # vaapi
   hardware.graphics = {
     enable = true;
@@ -374,7 +376,14 @@
   # audio fix
   boot.kernelParams = [ "snd_intel_dspcfg.dsp_driver=1" ];
 
-  boot.extraModprobeConfig = ''options snd_hda_intel model=alc255-acer,headset-mode'';
+  # obs virtual 
+  boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+  boot.kernelModules = [ "v4l2loopback" ];
+  boot.extraModprobeConfig = ''
+    options snd_hda_intel model=alc255-acer,headset-mode
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
+  security.polkit.enable = true;
 
   # bluetooth
   hardware.bluetooth.enable = true;
